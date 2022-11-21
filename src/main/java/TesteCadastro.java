@@ -9,6 +9,8 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.support.ui.Select;
 
+import br.ce.wcaquino.core.DSL;
+import br.ce.wcaquino.core.DriverFactory;
 import junit.framework.Assert;
 
 public class TesteCadastro {
@@ -28,7 +30,8 @@ public class TesteCadastro {
 
 	@After
 	public void finalizar() {
-		driver.quit();
+		// driver.quit();
+		DriverFactory.killDriver();
 	}
 
 	@Test
@@ -41,13 +44,13 @@ public class TesteCadastro {
 		page.setEsporte("Natacao", "Corrida");
 		page.cadastrar();
 
-		Assert.assertTrue(page.obterResultadoCadastro().startsWith("Cadastrado!"));
-		Assert.assertTrue(page.obterNomeCadastro().endsWith("Thales"));
-		Assert.assertEquals("Sobrenome: Ernane de Souza", page.obterSobrenomeCadastro());
-		Assert.assertEquals("Sexo: Masculino", page.obterSexoCadastro());
-		Assert.assertEquals("Comida: Carne", page.obterComidaCadastro());
-		Assert.assertEquals("Escolaridade: superior", page.obterEscolaridadeCadastro());
-		Assert.assertEquals("Esportes: Natacao Corrida", page.obterEsporteCadastro());
+		Assert.assertEquals("Cadastrado!", page.obterResultadoCadastro());
+		Assert.assertEquals("Thales", page.obterNomeCadastro());
+		Assert.assertEquals("Ernane de Souza", page.obterSobrenomeCadastro());
+		Assert.assertEquals("Masculino", page.obterSexoCadastro());
+		Assert.assertEquals("Carne", page.obterComidaCadastro());
+		Assert.assertEquals("superior", page.obterEscolaridadeCadastro());
+		Assert.assertEquals("Natacao Corrida", page.obterEsporteCadastro());
 	}
 
 	@Test

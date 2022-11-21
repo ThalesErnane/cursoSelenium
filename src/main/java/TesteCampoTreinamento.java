@@ -8,8 +8,10 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 
+import br.ce.wcaquino.core.DSL;
 import junit.framework.Assert;
 
 public class TesteCampoTreinamento {
@@ -115,8 +117,11 @@ public class TesteCampoTreinamento {
 	@Test
 	public void testJavascript() {
 		JavascriptExecutor js = (JavascriptExecutor) driver;
-		js.executeScript("alert('Testando js via selenium')");
+		// js.executeScript("alert('Testando js via selenium')");
 		js.executeScript("document.getElementById('elementosForm:nome').value = 'Escrito via js'");
-		
+		js.executeScript("document.getElementById('elementosForm:sobrenome').type = 'radio'");
+	
+		WebElement element = driver.findElement(By.id("elementosForm:nome"));
+		js.executeScript("arguments[0].style.border = arguments[1]", element, "solid 4px red");
 	}
 }

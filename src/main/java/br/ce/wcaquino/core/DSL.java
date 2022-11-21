@@ -1,8 +1,10 @@
+package br.ce.wcaquino.core;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.openqa.selenium.Alert;
 import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.Select;
@@ -29,8 +31,13 @@ public class DSL {
 		return driver.findElement(By.id(id_campo)).getAttribute("value");
 	}
 	
+	public void clicarRadioButton(By by) {
+		driver.findElement(by).click();
+	}
+	
 	public void clicarRadioButton(String id_campo) {
-		driver.findElement(By.id(id_campo)).click();
+		// driver.findElement(By.id(id_campo)).click();
+		clicarRadioButton(By.id(id_campo));
 	}
 	
 	public boolean isRadioMarcado(String id_campo) {
@@ -49,6 +56,12 @@ public class DSL {
 			Select combo = new Select(element);
 			combo.deselectByVisibleText(valor);
 		}
+	}
+	
+	public void selecionarComboPrime(String idCombo, String valor) {
+		clicarRadioButton(By.xpath("//*[@id='"+ idCombo +"']/../..//span"));
+		clicarRadioButton(valor);
+		// driver.findElement(By.id(valor)).click();
 	}
 	
 	public void selecionarCheckBox(String id_campo) {
@@ -151,5 +164,51 @@ public class DSL {
 	
 	public void trocarJanela(String id_campo) {
 		driver.switchTo().window(id_campo);
+	}
+	
+	public Object executarJS(String cmd, Object...param) {
+		JavascriptExecutor js = (JavascriptExecutor) driver;
+	    return js.executeScript(cmd, param);
+	}
+	
+	public void clicarBotaoTabela(String colunaBusca, String valor, String colunaBotao, String idTabela){
+		//procurar coluna do registro
+		WebElement tabela = driver.findElement(By.xpath("//*[@id='elementosForm:tableUsuarios']"));
+		int idColuna = obterIndiceColuna(colunaBusca, tabela);
+		
+		//encontrar a linha do registro
+		int idLinha = obterIndiceLinha(valor, tabela, idColuna);
+		
+		//procurar coluna do botao
+		int idColunaBotao = obterIndiceColuna(colunaBotao, tabela);
+		
+		//clicar no botao da celula encontrada
+		WebElement celula = tabela.findElement(By.xpath(".//tr["+idLinha+"]/td["+idColunaBotao+"]"));
+		celula.findElement(By.xpath(".//input")).click();
+		
+	}
+
+	protected int obterIndiceLinha(String valor, WebElement tabela, int idColuna) {
+		List<WebElement> linhas = tabela.findElements(By.xpath("./tbody/tr/td["+idColuna+"]"));
+		int idLinha = -1;
+		for(int i = 0; i < linhas.size(); i++) {
+			if(linhas.get(i).getText().equals(valor)) {
+				idLinha = i+1;
+				break;
+			}
+		}
+		return idLinha;
+	}
+
+	protected int obterIndiceColuna(String coluna, WebElement tabela) {
+		List<WebElement> colunas = tabela.findElements(By.xpath(".//th"));
+		int idColuna = -1;
+		for(int i = 0; i < colunas.size(); i++) {
+			if(colunas.get(i).getText().equals(coluna)) {
+				idColuna = i+1;
+				break;
+			}
+		}
+		return idColuna;
 	}
 }

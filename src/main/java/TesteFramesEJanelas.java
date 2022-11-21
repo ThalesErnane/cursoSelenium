@@ -1,12 +1,13 @@
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.openqa.selenium.Alert;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 
+import br.ce.wcaquino.core.DSL;
 import junit.framework.Assert;
 
 public class TesteFramesEJanelas {
@@ -24,7 +25,7 @@ public class TesteFramesEJanelas {
 
 	@After
 	public void finalizar() {
-		driver.quit();
+		// driver.quit();
 	}
 
 	@Test
@@ -56,5 +57,21 @@ public class TesteFramesEJanelas {
 		dsl.escrever(By.tagName("textarea"), "Deu certo?");
 		dsl.trocarJanela((String) driver.getWindowHandles().toArray()[0]); // retorna para o janela principal
 		dsl.escrever(By.tagName("textarea"), "e agora?");
+	}
+	
+	@Test
+	public void deveInteragirComFrameEscondido() {
+		WebElement frame = driver.findElement(By.id("frame2"));
+		dsl.executarJS("window.scrollBy(0, arguments[0])", frame.getLocation().y);
+		dsl.entrarFrame("frame2");
+		dsl.clicarBotao("frameButton");
+		String msg = dsl.alertaObterTextoEAceita();
+		Assert.assertEquals("Frame OK!", msg);
+	}
+	
+	@Test
+	public void deveClicarBotaoTabela() {
+		// dsl.clicarBotaoTabela("Nome", "Maria", "Botao", "elementosForm:tableUsuarios");
+		dsl.clicarBotaoTabela("Nome", "Maria", "Radio", "elementosForm:tableUsuarios");
 	}
 }
