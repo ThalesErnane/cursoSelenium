@@ -1,34 +1,22 @@
-import org.junit.After;
+package br.ce.wcaquino.test;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.openqa.selenium.Alert;
-import org.openqa.selenium.By;
-import org.openqa.selenium.Dimension;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
-import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.support.ui.Select;
 
-import junit.framework.Assert;
+import br.ce.wcaquino.core.BaseTest;
+import br.ce.wcaquino.core.DSL;
+import br.ce.wcaquino.core.DriverFactory;
+import br.ce.wcaquino.page.CampoTreinamentoPage;
 
-public class TesteCadastro {
+public class TesteCadastro extends BaseTest {
 
-	private WebDriver driver;
 	private DSL dsl;
 	private CampoTreinamentoPage page;
-	
+
 	@Before
 	public void inicializa() {
-		driver = new ChromeDriver();
-		driver.manage().window().setSize(new Dimension(1200, 765));
-		driver.get("file:///" + System.getProperty("user.dir") + "/src/main/resources/componentes.html");
-		dsl = new DSL(driver);
-		page = new CampoTreinamentoPage(driver);
-	}
-
-	@After
-	public void finalizar() {
-		driver.quit();
+		DriverFactory.getDriver().get("file:///" + System.getProperty("user.dir") + "/src/main/resources/componentes.html");
+		page = new CampoTreinamentoPage();
 	}
 
 	@Test
@@ -41,13 +29,13 @@ public class TesteCadastro {
 		page.setEsporte("Natacao", "Corrida");
 		page.cadastrar();
 
-		Assert.assertTrue(page.obterResultadoCadastro().startsWith("Cadastrado!"));
-		Assert.assertTrue(page.obterNomeCadastro().endsWith("Thales"));
-		Assert.assertEquals("Sobrenome: Ernane de Souza", page.obterSobrenomeCadastro());
-		Assert.assertEquals("Sexo: Masculino", page.obterSexoCadastro());
-		Assert.assertEquals("Comida: Carne", page.obterComidaCadastro());
-		Assert.assertEquals("Escolaridade: superior", page.obterEscolaridadeCadastro());
-		Assert.assertEquals("Esportes: Natacao Corrida", page.obterEsporteCadastro());
+		Assert.assertEquals("Cadastrado!", page.obterResultadoCadastro());
+		Assert.assertEquals("Thales", page.obterNomeCadastro());
+		Assert.assertEquals("Ernane de Souza", page.obterSobrenomeCadastro());
+		Assert.assertEquals("Masculino", page.obterSexoCadastro());
+		Assert.assertEquals("Carne", page.obterComidaCadastro());
+		Assert.assertEquals("superior", page.obterEscolaridadeCadastro());
+		Assert.assertEquals("Natacao Corrida", page.obterEsporteCadastro());
 	}
 
 	@Test
@@ -88,7 +76,7 @@ public class TesteCadastro {
 		page.setSobrenome("Ernane de Souza");
 		page.setSexoMasculino();
 		page.setComidaFavoritaCarne();
-		
+
 		page.setEsporte("Karate", "O que eh esporte?");
 
 		page.cadastrar();

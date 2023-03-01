@@ -1,35 +1,29 @@
+package br.ce.wcaquino.test;
 import java.util.Arrays;
 import java.util.List;
 
-import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.By;
-import org.openqa.selenium.Dimension;
 import org.openqa.selenium.JavascriptExecutor;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.WebElement;
 
-import junit.framework.Assert;
+import br.ce.wcaquino.core.BaseTest;
+import br.ce.wcaquino.core.DSL;
+import br.ce.wcaquino.core.DriverFactory;
+import br.ce.wcaquino.page.CampoTreinamentoPage;
 
-public class TesteCampoTreinamento {
+public class TesteCampoTreinamento extends BaseTest {
 
-	private WebDriver driver;
 	private DSL dsl;
 	private CampoTreinamentoPage page;
 
 	@Before
 	public void inicializa() {
-		driver = new ChromeDriver();
-		driver.manage().window().setSize(new Dimension(1200, 765));
-		driver.get("file:///" + System.getProperty("user.dir") + "/src/main/resources/componentes.html");
-		dsl = new DSL(driver);
-		page = new CampoTreinamentoPage(driver);
-	}
-
-	@After
-	public void finalizar() {
-		// driver.quit();
+		DriverFactory.getDriver().get("file:///" + System.getProperty("user.dir") + "/src/main/resources/componentes.html");
+		dsl = new DSL();
+		page = new CampoTreinamentoPage();
 	}
 
 	@Test
@@ -49,7 +43,7 @@ public class TesteCampoTreinamento {
 
 	@Test
 	public void deveInteragirComTextArea() {
-		page.setSugestoes("Teste");
+		page.setSugestoes("teste");
 		Assert.assertEquals("teste", dsl.obterValorCampo("elementosForm:sugestoes"));
 	}
 
@@ -68,7 +62,7 @@ public class TesteCampoTreinamento {
 	@Test
 	public void deveInteragirComComboBox() {
 		page.setEscolaridade("2o grau completo");
-		Assert.assertEquals("", dsl.obterValorComboBox("elementosForm:escolaridade"));
+		Assert.assertEquals("2o grau completo", dsl.obterValorComboBox("elementosForm:escolaridade"));
 	}
 
 	@Test
@@ -76,7 +70,6 @@ public class TesteCampoTreinamento {
 		Assert.assertEquals(8, dsl.obterQuantidadeOpcoesCombo("elementosForm:escolaridade"));
 		Assert.assertTrue(dsl.verificarOpcaoCombo("elementosForm:escolaridade", "Mestrado"));
 	}
-	
 	
 	@Test
 	public void deveVerificarValoresComboMultiplo(){
@@ -114,9 +107,17 @@ public class TesteCampoTreinamento {
 	
 	@Test
 	public void testJavascript() {
-		JavascriptExecutor js = (JavascriptExecutor) driver;
-		js.executeScript("alert('Testando js via selenium')");
+		JavascriptExecutor js = (JavascriptExecutor) DriverFactory.getDriver();
+		// js.executeScript("alert('Testando js via selenium')");
 		js.executeScript("document.getElementById('elementosForm:nome').value = 'Escrito via js'");
+		js.executeScript("document.getElementById('elementosForm:sobrenome').type = 'radio'");
 		
+		WebElement element = DriverFactory.getDriver().findElement(By.id("elementosForm:nome"));
+		js.executeScript("arguments[0].style.border = arguments[1]", element, "solid 4px red");
+	}
+	
+	@Test
+	public void deveClicarBotaoTabela(){
+		dsl.clicarBotaoTabela("Escolaridade", "Mestrado", "Radio", "elementosForm:tableUsuarios");
 	}
 }

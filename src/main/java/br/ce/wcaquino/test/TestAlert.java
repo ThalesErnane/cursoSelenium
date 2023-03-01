@@ -1,53 +1,43 @@
-import org.junit.After;
+package br.ce.wcaquino.test;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.openqa.selenium.Alert;
 import org.openqa.selenium.By;
-import org.openqa.selenium.Dimension;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
-import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.support.ui.Select;
 
-import junit.framework.Assert;
+import br.ce.wcaquino.core.BaseTest;
+import br.ce.wcaquino.core.DSL;
+import br.ce.wcaquino.core.DriverFactory;
 
-public class TestAlert {
-	private WebDriver driver;
+public class TestAlert extends BaseTest {
+
 	private DSL dsl;
-	
+
 	@Before
 	public void inicializa() {
-		driver = new ChromeDriver();
-		driver.manage().window().setSize(new Dimension(1200, 765));
-		driver.get("file:///" + System.getProperty("user.dir") + "/src/main/resources/componentes.html");
-		dsl = new DSL(driver);
-	}
-
-	@After
-	public void finalizar() {
-		driver.quit();
+		DriverFactory.getDriver().get("file:///" + System.getProperty("user.dir") + "/src/main/resources/componentes.html");
+		dsl = new DSL();
 	}
 
 	@Test
 	public void deveInteragirComAlertSimples() {
-		driver.findElement(By.id("alert")).click();
+		DriverFactory.getDriver().findElement(By.id("alert")).click();
 
-		String texto = dsl.alertaObterTextoEAceita(); 
+		String texto = dsl.alertaObterTextoEAceita();
 		Assert.assertEquals("Alert Simples", texto);
-		driver.findElement(By.id("elementosForm:nome")).sendKeys(texto);
+		DriverFactory.getDriver().findElement(By.id("elementosForm:nome")).sendKeys(texto);
 	}
 
 	@Test
-	public void deveInteragirComAlertConfirm(){
+	public void deveInteragirComAlertConfirm() {
 		dsl.clicarBotao("confirm");
 		Assert.assertEquals("Confirm Simples", dsl.alertaObterTextoEAceita());
 		Assert.assertEquals("Confirmado", dsl.alertaObterTextoEAceita());
-		
+
 		dsl.clicarBotao("confirm");
 		Assert.assertEquals("Confirm Simples", dsl.alertaObterTextoENega());
 		Assert.assertEquals("Negado", dsl.alertaObterTextoENega());
 	}
-	
+
 	@Test
 	public void deveInteragirComAlertNegado() {
 		dsl.clicarBotao("confirm");
